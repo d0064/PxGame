@@ -1,5 +1,3 @@
-Certainly! Here's the updated section with the requested changes:
-
 ```markdown
 ## Getting Started
 
