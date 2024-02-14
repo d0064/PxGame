@@ -119,7 +119,7 @@ export default async function drawByOffsets(
     const req = (isAdmin) ? null : canvas.req;
     const clrIgnore = canvas.cli || 0;
     let factor = (isAdmin || (user.userlvl > 0 && pixels[0][1] < clrIgnore))
-      ? 0.0 : coolDownFactor;
+      ? 0.1 : coolDownFactor;
 
     if (user.country === 'tr') {
       factor *= 1.4;
