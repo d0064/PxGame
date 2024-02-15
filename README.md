@@ -6,10 +6,10 @@ To get started, follow these steps:
 1. Go to the directory of the cloned repository, either PixelPlanet's or ours.
 
 ```bash
-cd path/to/cloned/repository
+cd C:/Users/d0064/pixelplanet
 ```
 
-2. Install the required libraries and dependencies using npm.
+2. Install the required dependencies using npm.
 
 ```bash
 npm install
