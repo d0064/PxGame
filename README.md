@@ -40,7 +40,7 @@ This command runs the entire pixelplanet code, If you wanna change stuff then do
 6. When making changes outside the `dist` folder (the created folder to deploy PixelPlanet), build only one language to speed up the process. After making your changes, you can build the entire game to speed up the development process.
 
 ```bash
-# Example command for building a specific language
+# The command for building a specific language
 npm run build -- --langs en
 ```
 
