@@ -261,124 +261,139 @@ export class ChatProvider {
   }
 
   async adminCommands(message, channelId, user) {
-    // admin commands
     const cmdArr = message.split(' ');
     const cmd = cmdArr[0].substring(1);
     const args = cmdArr.slice(1);
     const initiator = `@[${escapeMd(user.name)}](${user.id})`;
-    switch (cmd) {
-      case 'mute': {
-        const timeMin = Number(args.slice(-1));
-        if (args.length < 2 || Number.isNaN(timeMin)) {
-          return this.mute(
-            getUserFromMd(args.join(' ')),
-            {
-              printChannel: channelId,
-              initiator,
-            },
-          );
+
+    if (cmd === 'announce') {
+        const customMessage = args.join(' ');
+
+        if (!customMessage) {
+            return 'Please provide a message to announce.';
         }
-        return this.mute(
-          getUserFromMd(args.slice(0, -1).join(' ')),
-          {
-            printChannel: channelId,
-            initiator,
-            duration: timeMin,
-          },
-        );
-      }
 
-      case 'unmute':
-        return this.unmute(
-          getUserFromMd(args.join(' ')),
-          {
-            printChannel: channelId,
-            initiator,
-          },
-        );
-
-      case 'mutec': {
-        if (args[0]) {
-          const cc = args[0].toLowerCase();
-          const ret = await mutec(channelId, cc);
-          if (ret === null) {
-            return 'No legit country defined';
-          }
-          if (!ret) {
-            return `Country ${cc} is already muted`;
-          }
-          if (ret) {
-            this.broadcastChatMessage(
-              'info',
-              `Country ${cc} has been muted from this channel by ${initiator}`,
-              channelId,
-              this.infoUserId,
-            );
-          }
-          return null;
-        }
-        return 'No country defined for mutec';
-      }
-
-      case 'unmutec': {
-        if (args[0]) {
-          const cc = args[0].toLowerCase();
-          const ret = await unmutec(channelId, cc);
-          if (ret === null) {
-            return 'No legit country defined';
-          }
-          if (!ret) {
-            return `Country ${cc} is not muted`;
-          }
-          this.broadcastChatMessage(
-            'info',
-            `Country ${cc} has been unmuted from this channel by ${initiator}`,
+        this.broadcastChatMessage(
+            user.name,
+            customMessage,
             channelId,
-            this.infoUserId,
-          );
-          return null;
-        }
-        const ret = await unmutecAll(channelId);
-        if (ret) {
-          this.broadcastChatMessage(
-            'info',
-            `All countries unmuted from this channel by ${initiator}`,
-            channelId,
-            this.infoUserId,
-          );
-          return null;
-        }
-        return 'No country is currently muted from this channel';
-      }
-
-      case 'listmc': {
-        const ccArr = await listMutec(channelId);
-        if (ccArr.length) {
-          return `Muted countries: ${ccArr}`;
-        }
-        return 'No country is currently muted from this channel';
-      }
-
-      case 'autoban': {
-        if (args[0]) {
-          this.autobanPhrase = args.join(' ');
-          if (this.autobanPhrase === 'unset' || this.autobanPhrase.length < 5) {
-            this.autobanPhrase = null;
-          }
-          return `Set autoban phrase on shard to ${this.autobanPhrase}`;
-        }
-        // eslint-disable-next-line
-        if (this.autobanPhrase) {
-          // eslint-disable-next-line
-          return `Current autoban phrase on shard is ${this.autobanPhrase}, use "/autoban unset" to remove it`;
-        }
-        return 'Autoban phrase is currently not set on this shard';
-      }
-
-      default:
-        return `Couldn't parse command ${cmd}`;
+            user.id,
+            'c1',
+        );
+        return null;
     }
-  }
+  
+    switch (cmd) {
+        case 'mute': {
+            const timeMin = Number(args.slice(-1));
+            if (args.length < 2 || Number.isNaN(timeMin)) {
+                return this.mute(
+                    getUserFromMd(args.join(' ')),
+                    {
+                        printChannel: channelId,
+                        initiator,
+                    },
+                );
+            }
+            return this.mute(
+                getUserFromMd(args.slice(0, -1).join(' ')),
+                {
+                    printChannel: channelId,
+                    initiator,
+                    duration: timeMin,
+                },
+            );
+        }
+
+        case 'unmute':
+            return this.unmute(
+                getUserFromMd(args.join(' ')),
+                {
+                    printChannel: channelId,
+                    initiator,
+                },
+            );
+
+        case 'mutec': {
+            if (args[0]) {
+                const cc = args[0].toLowerCase();
+                const ret = await mutec(channelId, cc);
+                if (ret === null) {
+                    return 'No legit country defined';
+                }
+                if (!ret) {
+                    return `Country ${cc} is already muted`;
+                }
+                if (ret) {
+                    this.broadcastChatMessage(
+                        'info',
+                        `Country ${cc} has been muted from this channel by ${initiator}`,
+                        channelId,
+                        this.infoUserId,
+                    );
+                }
+                return null;
+            }
+            return 'No country defined for mutec';
+        }
+
+        case 'unmutec': {
+            if (args[0]) {
+                const cc = args[0].toLowerCase();
+                const ret = await unmutec(channelId, cc);
+                if (ret === null) {
+                    return 'No legit country defined';
+                }
+                if (!ret) {
+                    return `Country ${cc} is not muted`;
+                }
+                this.broadcastChatMessage(
+                    'info',
+                    `Country ${cc} has been unmuted from this channel by ${initiator}`,
+                    channelId,
+                    this.infoUserId,
+                );
+                return null;
+            }
+            const ret = await unmutecAll(channelId);
+            if (ret) {
+                this.broadcastChatMessage(
+                    'info',
+                    `All countries unmuted from this channel by ${initiator}`,
+                    channelId,
+                    this.infoUserId,
+                );
+                return null;
+            }
+            return 'No country is currently muted from this channel';
+        }
+
+        case 'listmc': {
+            const ccArr = await listMutec(channelId);
+            if (ccArr.length) {
+                return `Muted countries: ${ccArr}`;
+            }
+            return 'No country is currently muted from this channel';
+        }
+
+        case 'autoban': {
+            if (args[0]) {
+                this.autobanPhrase = args.join(' ');
+                if (this.autobanPhrase === 'unset' || this.autobanPhrase.length < 5) {
+                    this.autobanPhrase = null;
+                }
+                return `Set autoban phrase on shard to ${this.autobanPhrase}`;
+            }
+            if (this.autobanPhrase) {
+                return `Current autoban phrase on shard is ${this.autobanPhrase}, use "/autoban unset" to remove it`;
+            }
+            return 'Autoban phrase is currently not set on this shard';
+        }
+
+        default:
+            return `Couldn't parse command ${cmd}`;
+    }
+}
 
   /*
    * User.ttag for translation has to be set, this is just the case
