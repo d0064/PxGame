@@ -14,7 +14,7 @@ import { TILE_SIZE } from './constants';
 import { CANVAS_ID } from '../data/redis/Event';
 import canvases from './canvases';
 
-const TARGET_RADIUS = 31;
+const TARGET_RADIUS = 32;
 
 class Void {
   // chunk coords
