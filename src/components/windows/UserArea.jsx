@@ -1,7 +1,3 @@
-/**
- *
- */
-
 import React, { Suspense, useCallback, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { t } from 'ttag';
@@ -21,6 +17,11 @@ const Rankings = React.lazy(() => import(/* webpackChunkName: "stats" */ '../Ran
 const Converter = React.lazy(() => import(/* webpackChunkName: "converter" */ '../Converter'));
 // eslint-disable-next-line max-len
 const Modtools = React.lazy(() => import(/* webpackChunkName: "modtools" */ '../Modtools'));
+
+// New import for iframe
+const VoidPage = () => {
+  return <iframe src="https://pxgame.xyz/void" width="100%" height="400px" title="Void Page"></iframe>;
+};
 
 const UserArea = () => {
   const name = useSelector((state) => state.user.name);
@@ -67,12 +68,18 @@ const UserArea = () => {
           </Suspense>
         </div>
         {userlvl && (
-        <div label={(userlvl === 1) ? t`Modtools` : t`Modtools`}>
+          <div label={(userlvl === 1) ? t`Modtools` : t`Modtools`}>
+            <Suspense fallback={<div>{t`Loading...`}</div>}>
+              <Modtools />
+            </Suspense>
+          </div>
+        )}
+        {/* New tab for "Void" */}
+        <div label={t`Void`}>
           <Suspense fallback={<div>{t`Loading...`}</div>}>
-            <Modtools />
+            <VoidPage />
           </Suspense>
         </div>
-        )}
       </Tabs>
       <br />
       {t`Consider joining us on Guilded:`}&nbsp;
